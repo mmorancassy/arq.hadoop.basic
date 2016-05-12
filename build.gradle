@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    jcenter()
+}
+
+mainClassName = 'es.hadoop.basic.initializer.Init'
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.18'
+    compile 'log4j:log4j:1.2.16'
+    compile 'org.springframework.data:spring-data-hadoop:2.3.0.RELEASE'
+    testCompile 'junit:junit:4.12'
+}
+
+task fatJar(type: Jar) {
+
+	println 'Building jar with dependencies -fat jar-'
+	
+    baseName = project.name + '-all'
+    from { 
+    	configurations.compile.collect { 
+    		it.isDirectory() ? it : zipTree(it) 
+    	} 
+    }
+    with jar
+    
+	manifest {
+	    attributes 'Main-Class': 'es.hadoop.basic.initializer.Init'
+	}    
+}
